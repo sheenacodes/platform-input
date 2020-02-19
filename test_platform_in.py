@@ -1,5 +1,6 @@
 from platform_in import app as flask_app
 import pytest
+import json
 
 @pytest.fixture(scope='module')
 def test_client():
@@ -17,11 +18,20 @@ def test_client():
  
     ctx.pop()
 
-def test_home_page(test_client):
+def test_create_user_success(test_client):
     """
-    GIVEN a Flask application
-    WHEN the '/' page is requested (GET)
-    THEN check the response is valid
+    GIVEN flask app
+    WHEN POST request is sent to '/user' with valid input
+    THEN check the response is 200
     """
-    response = test_client.get('/')
+    request_body = {
+        "username":"hello",
+        "email":"hello",
+        "password":"hello"
+    }
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+    response = test_client.post('/user', data=json.dumps(request_body),headers = headers)
     assert response.status_code == 200
