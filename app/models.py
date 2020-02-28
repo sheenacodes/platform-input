@@ -25,3 +25,36 @@ class PlatformUser(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    @classmethod
+    def return_all(cls):
+        def to_json(x):
+            return {
+                'username': x.username,
+                'email': x.email
+            }
+        return {'users': list(map(lambda x: to_json(x), PlatformUser.query.all()))}
+
+    @classmethod
+    def delete_all(cls):
+        try:
+            num_rows_deleted = db.session.query(cls).delete()
+            db.session.commit()
+            return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
+        except:
+            return {'message': 'Something went wrong'}
+
+
+class RevokedTokenModel(db.Model):
+    __tablename__ = 'revoked_tokens'
+    id = db.Column(db.Integer, primary_key = True)
+    jti = db.Column(db.String(120))
+    
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    @classmethod
+    def is_jti_blacklisted(cls, jti):
+        query = cls.query.filter_by(jti = jti).first()
+        return bool(query)

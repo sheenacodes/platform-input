@@ -12,13 +12,17 @@ def get_env_variable(name):
 POSTGRES_URL = "localhost" #get_env_variable("POSTGRES_URL")
 POSTGRES_USER = "sheena"  #get_env_variable("POSTGRES_USER")
 POSTGRES_PW = "sheena"   #get_env_variable("POSTGRES_PW")
-POSTGRES_DB = "test_db" #get_env_variable("POSTGRES_DB")
+POSTGRES_DB = "sp_1" #get_env_variable("POSTGRES_DB")
 
 class Config(object):
     
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'super-secret-key'
     DEBUG = True
     CSRF_ENABLED = True
+    JWT_SECRET_KEY = 'jwt-secret-string'
+    JWT_BLACKLIST_ENABLED = True
+    JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
+
     #SWAGGER = {'swagger'}
 
 class Configdb(Config):
